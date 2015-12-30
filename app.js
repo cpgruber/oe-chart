@@ -116,7 +116,7 @@ var oeViz = {
       .style("left",tL).style("right",tR)
 
     tooltip.select(".name").text(d["Player Name"]+" ("+d["Position"]+")");
-    tooltip.select(".stat1").text("OE: "+d["Avg. Oe"]);
+    tooltip.select(".stat1").text("Avg. OE: "+d["Avg. Oe"]);
     tooltip.select(".stat2").text(field+": "+d[field]);
     d3.select(this).style("opacity",1).attr("fill-opacity",0.5);
   },
