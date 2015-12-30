@@ -16,6 +16,7 @@ var oeViz = {
     this.page.svg = d3.select(".svgContain").append("svg")
       .attr("height",this.svgAtt.height).attr("width",this.svgAtt.width);
     this.page.gridlines = this.page.svg.append("g").attr("class","grid");
+    this.page.annotations = this.page.svg.append("g").attr("class","annotations")
     this.page.tooltip = d3.select(".tooltip");
 
     this.page.xAxisG = this.page.svg.append('svg:g').attr('class','xaxis')
@@ -165,7 +166,7 @@ var oeViz = {
   },
   transitionAnnotations:function(field){
     var self = this;
-    var annos = this.page.svg.selectAll(".annotate")
+    var annos = this.page.annotations.selectAll(".annotate")
     annos.selectAll("line").transition().duration(500)
       .attr("y1",function(d){
         return self.page.scales[field](d[field])
@@ -184,7 +185,7 @@ var oeViz = {
     var field = this.getField();
     var names = ["DeAndre Jordan", "Andre Drummond", "Stephen Curry"];
     var players = data.filter(function(a){return names.indexOf(a["Player Name"])>-1})
-    var annotations = this.page.svg.selectAll(".annotate").data(players).enter().append("g")
+    var annotations = this.page.annotations.selectAll(".annotate").data(players).enter().append("g")
       .attr("class","annotate");
     annotations.append("line")
       .attr("stroke","black")
