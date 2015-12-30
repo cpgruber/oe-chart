@@ -1,3 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+*{
+  box-sizing: border-box;
+  margin:0;
+  font-family: "Montserrat", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif, sans-serif;
+}
 html,body{
   height:100%;
   width:100%;
@@ -10,9 +16,26 @@ html,body{
 }
 .tooltip{
   height:auto;
-  width:120px;
+  width:auto;
   border-radius: 5px;
   background-color: white;
   position:absolute;
   border: 1px solid black;
+  display: none;
+  padding:5px;
+  text-align: center;
 }
+.stat{
+  text-align: left;
+  font-size: 14px;
+}
+.xaxis path, .xaxis line,.yaxis path, .yaxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+/*
+#DFD9C5;--dark tan
+#00C1E0--blue
+#ECE6D2;--light tan
+*/
