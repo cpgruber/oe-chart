@@ -17,6 +17,7 @@ var oeViz = {
       .attr("height",this.svgAtt.height).attr("width",this.svgAtt.width);
     this.page.gridlines = this.page.svg.append("g").attr("class","grid");
     this.page.annotations = this.page.svg.append("g").attr("class","annotations")
+    this.page.players = this.page.svg.append("g").attr("class","players");
     this.page.tooltip = d3.select(".tooltip");
 
     this.page.xAxisG = this.page.svg.append('svg:g').attr('class','xaxis')
@@ -76,7 +77,7 @@ var oeViz = {
     var self = this;
     var field = this.getField();
     this.transitionScales(field);
-    this.page.svg.selectAll(".player").data(data).enter().append("circle")
+    this.page.players.selectAll(".player").data(data).enter().append("circle").attr("class","player")
       .attr("transform",function(d){
         return "translate("+self.page.scales["Avg. Oe"](d["Avg. Oe"])+","+self.page.scales[field](d[field])+")";
       })
@@ -153,13 +154,21 @@ var oeViz = {
       .attr("stroke","black")
       .attr("stroke-width",0.2);
     selection.exit().remove();
+    var xGrid = this.page.gridlines.select(".x-grid");
+    var xTicks = this.page.scales["Avg. Oe"].ticks();
+    var selection = xGrid.selectAll("line").data(xTicks)
+    selection.transition().duration(500)
+      .attr("x1", function(d){return self.page.scales["Avg. Oe"](d)})
+      .attr("x2", function(d){return self.page.scales["Avg. Oe"](d)})
+      .attr("y1", self.svgAtt.margins.top)
+      .attr("y2", self.svgAtt.height-self.svgAtt.margins.bottom);
   },
   transitionChart:function(field){
     var self = this;
     this.transitionScales(field);
     this.transitionGridlines(field);
     this.transitionAnnotations(field);
-    this.page.svg.selectAll("circle").transition().duration(500)
+    this.page.players.selectAll("circle").transition().duration(500)
       .attr("transform",function(d){
         return "translate("+self.page.scales["Avg. Oe"](d["Avg. Oe"])+","+self.page.scales[field](d[field])+")";
       })
@@ -169,6 +178,13 @@ var oeViz = {
     var annos = this.page.annotations.selectAll(".annotate")
     var lineW = this.svgAtt.width/15;
     annos.selectAll("line").transition().duration(500)
+      .attr("x1",function(d){
+        return self.page.scales["Avg. Oe"](d["Avg. Oe"])
+      })
+      .attr("x2",function(d){
+        var offset = (d["Player Name"]=="Stephen Curry")?lineW:lineW*(-1);
+        return (self.page.scales["Avg. Oe"](d["Avg. Oe"]))+offset;
+      })
       .attr("y1",function(d){
         return self.page.scales[field](d[field])
       })
@@ -234,16 +250,21 @@ var oeViz = {
       self.makeChart(data);
       self.annotate(data);
       self.bindInteraction();
-    })
+
+      $(window).on("resize",function(){
+        oeViz.svgAtt.width = parseFloat(d3.select('.svgContain').style('width'));
+        self.page.svg.attr("width",self.svgAtt.width);
+        self.page.xAxisLabel
+          .attr('transform','translate('+(self.svgAtt.width/2)+','+(self.svgAtt.height-10)+')')
+        self.page.yAxisLabel
+          .attr('transform','translate('+(20)+','+(self.svgAtt.height/2)+')rotate(-90)')
+        self.makeScales(data);
+        self.transitionChart(self.getField());
+      });
+    });
   }
 }
 
 $(document).ready(function(){
   oeViz.init();
-  $(window).on("resize",function(){
-    $("svg").remove();
-    oeViz.svgAtt.width = parseFloat(d3.select('.svgContain').style('width'));
-    oeViz.svgAtt.height = parseFloat(d3.select('.svgContain').style('height'));
-    oeViz.init();
-  })
-})
+});
