@@ -138,21 +138,80 @@ var oeViz = {
     var self = this;
     var yGrid = this.page.gridlines.select(".y-grid");
     var yTicks = this.page.scales[field].ticks();
-    var selection = yGrid.selectAll("line").data(yTicks);
+    var selection = yGrid.selectAll("line").data(yTicks)
     selection.transition().duration(500)
       .attr("y1", function(d){return self.page.scales[field](d)})
       .attr("y2", function(d){return self.page.scales[field](d)})
       .attr("x1", self.svgAtt.margins.left)
       .attr("x2", self.svgAtt.width-self.svgAtt.margins.right);
+    selection.enter().append("line").transition().duration(500)
+      .attr("y1", function(d){return self.page.scales[field](d)})
+      .attr("y2", function(d){return self.page.scales[field](d)})
+      .attr("x1", self.svgAtt.margins.left)
+      .attr("x2", self.svgAtt.width-self.svgAtt.margins.right)
+      .attr("stroke","black")
+      .attr("stroke-width",0.2);
     selection.exit().remove();
   },
   transitionChart:function(field){
     var self = this;
     this.transitionScales(field);
     this.transitionGridlines(field);
+    this.transitionAnnotations(field);
     this.page.svg.selectAll("circle").transition().duration(500)
       .attr("transform",function(d){
         return "translate("+self.page.scales["Avg. Oe"](d["Avg. Oe"])+","+self.page.scales[field](d[field])+")";
+      })
+  },
+  transitionAnnotations:function(field){
+    var self = this;
+    var annos = this.page.svg.selectAll(".annotate")
+    annos.selectAll("line").transition().duration(500)
+      .attr("y1",function(d){
+        return self.page.scales[field](d[field])
+      })
+      .attr("y2",function(d){
+        return self.page.scales[field](d[field])
+      })
+    annos.selectAll("text").transition().duration(500)
+      .attr("transform", function(d){
+        var offset = (d["Player Name"]=="Stephen Curry")?100:(-50);
+        return "translate("+(self.page.scales["Avg. Oe"](d["Avg. Oe"])+offset)+","+self.page.scales[field](d[field])+")"
+      })
+  },
+  annotate:function(data){
+    var self = this;
+    var field = this.getField();
+    var names = ["DeAndre Jordan", "Andre Drummond", "Stephen Curry"];
+    var players = data.filter(function(a){return names.indexOf(a["Player Name"])>-1})
+    var annotations = this.page.svg.selectAll(".annotate").data(players).enter().append("g")
+      .attr("class","annotate");
+    annotations.append("line")
+      .attr("stroke","black")
+      .attr("x1",function(d){
+        return self.page.scales["Avg. Oe"](d["Avg. Oe"])
+      })
+      .attr("x2",function(d){
+        var offset = (d["Player Name"]=="Stephen Curry")?100:(-50);
+        return (self.page.scales["Avg. Oe"](d["Avg. Oe"]))+offset;
+      })
+      .attr("y1",function(d){
+        return self.page.scales[field](d[field])
+      })
+      .attr("y2",function(d){
+        return self.page.scales[field](d[field])
+      })
+    annotations.append("text")
+      .attr("alignment-baseline","middle")
+      .text(function(d){
+        return d["Player Name"]
+      })
+      .attr("transform", function(d){
+        var offset = (d["Player Name"]=="Stephen Curry")?100:(-50);
+        return "translate("+(self.page.scales["Avg. Oe"](d["Avg. Oe"])+offset)+","+self.page.scales[field](d[field])+")"
+      })
+      .attr("text-anchor",function(d){
+        return (d["Player Name"]=="Stephen Curry")?"start":"end";
       })
   },
   bindInteraction:function(){
@@ -170,6 +229,7 @@ var oeViz = {
       self.makeScales(data);
       self.makeGrid();
       self.makeChart(data);
+      self.annotate(data);
       self.bindInteraction();
     })
   }
