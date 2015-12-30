@@ -15,6 +15,7 @@ var oeViz = {
   getPageComponents:function(){
     this.page.svg = d3.select(".svgContain").append("svg")
       .attr("height",this.svgAtt.height).attr("width",this.svgAtt.width);
+    this.page.tooltip = d3.select(".tooltip");
   },
   getField:function(){
     return d3.select("select").node().value;
@@ -27,9 +28,9 @@ var oeViz = {
     var fields = ["Avg. Assists","Avg. Points","Avg. Field Goals Attempted","Avg. Field Goals Made","Avg. Rebounds Offensive","Avg. Rebounds Total","Avg. Turnovers"];
     for (var i=0;i<fields.length;i++){
       var field = fields[i];
-      this.page.scales[field] = this.makeScale(field,data,[this.svgAtt.height,0])
+      this.page.scales[field] = this.makeScale(field,data,[this.svgAtt.height-this.svgAtt.margins.bottom,this.svgAtt.margins.top])
     }
-    this.page.scales["Avg. Oe"] = this.makeScale(field,data,[0,this.svgAtt.width])
+    this.page.scales["Avg. Oe"] = this.makeScale("Avg. Oe",data,[this.svgAtt.margins.left,this.svgAtt.width-this.svgAtt.margins.right])
   },
   makeChart:function(data){
     var self = this;
@@ -39,10 +40,25 @@ var oeViz = {
         return "translate("+self.page.scales["Avg. Oe"](d["Avg. Oe"])+","+self.page.scales[field](d[field])+")"
       })
       .attr("r",6)
-      .attr("fill","none")
+      .attr("fill-opacity",0)
       .attr("stroke",function(d){
         return (d["Pos. Type"]=="big")?"red":"blue";
       })
+      .on("mouseover",self.circleHover)
+      .on("mousemove",self.circleHover)
+      .on("mouseout",self.circleUnhover)
+  },
+  circleHover:function(d){
+    oeViz.page.tooltip
+      .text(function(){
+        return d["Player Name"]
+      })
+      .style("display","block")
+      .style("top",(d3.event.pageY + 10)+"px")
+      .style("left",(d3.event.pageX + 10)+"px")
+  },
+  circleUnhover:function(d){
+    oeViz.page.tooltip.style("display","none")
   },
   transitionChart:function(field){
     var self = this;

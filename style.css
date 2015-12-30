@@ -1,9 +1,18 @@
 html,body{
   height:100%;
   width:100%;
+  position:relative;
 }
 .svgContain{
   width:80%;
   height:80%;
   margin:0 auto;
+}
+.tooltip{
+  height:auto;
+  width:120px;
+  border-radius: 5px;
+  background-color: white;
+  position:absolute;
+  border: 1px solid black;
 }
