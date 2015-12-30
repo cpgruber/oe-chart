@@ -9,9 +9,14 @@ html,body{
   width:100%;
   position:relative;
 }
-.svgContain{
+header{
   width:80%;
-  height:80%;
+  margin:1em auto;
+}
+.svgContain{
+  position:relative;
+  width:80%;
+  height:90%;
   margin:0 auto;
 }
 .tooltip{
@@ -33,6 +38,11 @@ html,body{
   fill: none;
   stroke: black;
   shape-rendering: crispEdges;
+}
+@media (max-width:760px){
+  header img{
+    height:60px;
+  }
 }
 /*
 #DFD9C5;--dark tan

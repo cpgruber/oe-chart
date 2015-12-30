@@ -27,7 +27,8 @@ var oeViz = {
     this.page.yAxis = d3.svg.axis().orient('left');
 
     this.page.xAxisLabel = this.page.svg.append('text').attr('class','axisTitle')
-      .attr('transform','translate('+(this.svgAtt.width/2)+','+(this.svgAtt.height-10)+')');
+      .attr('transform','translate('+(this.svgAtt.width/2)+','+(this.svgAtt.height-10)+')')
+      .attr('text-anchor','middle');
     this.page.yAxisLabel = this.page.svg.append('text').attr('class','axisTitle')
       .attr('transform','translate('+(20)+','+(this.svgAtt.height/2)+')rotate(-90)')
       .attr('text-anchor','middle');
@@ -94,10 +95,27 @@ var oeViz = {
   },
   circleHover:function(d){
     var field = oeViz.getField();
-    var tooltip = oeViz.page.tooltip
+    var tooltip = oeViz.page.tooltip;
+
+    if (d3.event.offsetX > oeViz.svgAtt.width/2){
+      var tL = "auto";
+      var tR = (oeViz.svgAtt.width - d3.event.offsetX + 10)+"px";
+    }else{
+      var tL = (d3.event.offsetX + 10)+"px";
+      var tR = "auto";
+    }
+    if (d3.event.offsetY > oeViz.svgAtt.height/2){
+      var tT = "auto";
+      var tB = (oeViz.svgAtt.height - d3.event.offsetY - 10)+"px";
+    }else{
+      var tT = (d3.event.offsetY + 10)+"px";
+      var tB = "auto";
+    }
     tooltip.style("display","block")
-      .style("top",(d3.event.pageY + 10)+"px")
-      .style("left",(d3.event.pageX + 10)+"px");
+      // .style("top",(d3.event.pageY + 10)+"px")
+      .style("top",tT).style("bottom",tB)
+      .style("left",tL).style("right",tR)
+      // .style("left",(d3.event.pageX + 10)+"px");
     tooltip.select(".name").text(d["Player Name"]+" ("+d["Position"]+")");
     tooltip.select(".stat1").text("OE: "+d["Avg. Oe"]);
     tooltip.select(".stat2").text(field+": "+d[field]);
