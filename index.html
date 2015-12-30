@@ -10,23 +10,29 @@
 <body>
   <header>
     <img src="assets/images/stattleship_logotype.png" alt="Stattleship">
+    <h2>Offensive Efficiency vs
+      <select>
+        <option value="Avg. Assists">Assists</option>
+        <option value="Avg. Points">Points</option>
+        <option value="Avg. Field Goals Attempted">Field Goals Attempted</option>
+        <option value="Avg. Field Goals Made">Field Goals Made</option>
+        <option value="Avg. Rebounds Offensive">Offensive Rebounds</option>
+        <option value="Avg. Rebounds Total">Total Rebounds</option>
+        <option value="Avg. Turnovers">Turnovers</option>
+      </select>
+    </h2>
   </header>
   <div class="svgContain">
-    <select>
-      <option value="Avg. Assists">Assists</option>
-      <option value="Avg. Points">Points</option>
-      <option value="Avg. Field Goals Attempted">FGA</option>
-      <option value="Avg. Field Goals Made">FGM</option>
-      <option value="Avg. Rebounds Offensive">Offensive Rebounds</option>
-      <option value="Avg. Rebounds Total">Total Rebounds</option>
-      <option value="Avg. Turnovers">Turnovers</option>
-    </select>
     <div class="tooltip">
       <p class="name"></p>
       <p class="stat1 stat"></p>
       <p class="stat2 stat"></p>
     </div>
   </div>
+  <footer>
+    <img src="assets/images/stattleship_icon.png" alt="Stattleship logo">
+    Smart Stats provided by <a href="https://www.stattleship.com">Stattleship.com</a>
+  </footer>
 <script src="app.js"></script>
 </body>
 </html>

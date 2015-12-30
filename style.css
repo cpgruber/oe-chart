@@ -3,6 +3,7 @@
   box-sizing: border-box;
   margin:0;
   font-family: "Montserrat", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif, sans-serif;
+  font-size: 1em;
 }
 html,body{
   height:100%;
@@ -12,6 +13,23 @@ html,body{
 header{
   width:80%;
   margin:1em auto;
+  font-size: 1.6em;
+}
+a:visited,a:hover,a:focus,a{
+  color:#00C1E0;
+}
+select {
+  height: 38px;
+  padding: 6px 10px;
+  background-color: #fff;
+  border: 1px solid #D1D1D1;
+  border-radius: 4px;
+  box-shadow: none;
+  font-size:1em;
+}
+select:focus {
+  border: 2px solid #00C1E0;
+  outline: 0;
 }
 .svgContain{
   position:relative;
@@ -32,20 +50,23 @@ header{
 }
 .stat{
   text-align: left;
-  font-size: 14px;
+  font-size: 0.8em;
 }
 .xaxis path, .xaxis line,.yaxis path, .yaxis line {
   fill: none;
   stroke: black;
   shape-rendering: crispEdges;
 }
+footer{
+  text-align:center;
+  padding:10px;
+}
+footer img{
+  height:60px;
+  vertical-align: middle;
+}
 @media (max-width:760px){
   header img{
     height:60px;
   }
 }
-/*
-#DFD9C5;--dark tan
-#00C1E0--blue
-#ECE6D2;--light tan
-*/
