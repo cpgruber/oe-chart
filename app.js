@@ -112,10 +112,9 @@ var oeViz = {
       var tB = "auto";
     }
     tooltip.style("display","block")
-      // .style("top",(d3.event.pageY + 10)+"px")
       .style("top",tT).style("bottom",tB)
       .style("left",tL).style("right",tR)
-      // .style("left",(d3.event.pageX + 10)+"px");
+
     tooltip.select(".name").text(d["Player Name"]+" ("+d["Position"]+")");
     tooltip.select(".stat1").text("OE: "+d["Avg. Oe"]);
     tooltip.select(".stat2").text(field+": "+d[field]);
@@ -175,4 +174,13 @@ var oeViz = {
     })
   }
 }
-oeViz.init();
+
+$(document).ready(function(){
+  oeViz.init();
+  $(window).on("resize",function(){
+    $("svg").remove();
+    oeViz.svgAtt.width = parseFloat(d3.select('.svgContain').style('width'));
+    oeViz.svgAtt.height = parseFloat(d3.select('.svgContain').style('height'));
+    oeViz.init();
+  })
+})
