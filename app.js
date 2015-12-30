@@ -15,6 +15,7 @@ var oeViz = {
   getPageComponents:function(){
     this.page.svg = d3.select(".svgContain").append("svg")
       .attr("height",this.svgAtt.height).attr("width",this.svgAtt.width);
+    this.page.gridlines = this.page.svg.append("g").attr("class","grid");
     this.page.tooltip = d3.select(".tooltip");
 
     this.page.xAxisG = this.page.svg.append('svg:g').attr('class','xaxis')
@@ -45,6 +46,29 @@ var oeViz = {
       this.page.scales[field] = this.makeScale(field,data,[this.svgAtt.height-this.svgAtt.margins.bottom,this.svgAtt.margins.top])
     }
     this.page.scales["Avg. Oe"] = this.makeScale("Avg. Oe",data,[this.svgAtt.margins.left,this.svgAtt.width-this.svgAtt.margins.right])
+  },
+  makeGrid:function(){
+    var self = this;
+    var field = this.getField();
+    var yGrid = this.page.gridlines.append("g").attr("class","y-grid");
+    var xGrid = this.page.gridlines.append("g").attr("class","x-grid");
+    var yTicks = this.page.scales[field].ticks();
+    var xTicks = this.page.scales["Avg. Oe"].ticks();
+    xGrid.selectAll("line").data(xTicks).enter().append("line")
+      .attr("stroke","black")
+      .attr("stroke-width",0.2)
+      .attr("x1", function(d){return self.page.scales["Avg. Oe"](d)})
+      .attr("x2", function(d){return self.page.scales["Avg. Oe"](d)})
+      .attr("y1", self.svgAtt.margins.top)
+      .attr("y2", self.svgAtt.height-self.svgAtt.margins.bottom);
+
+    yGrid.selectAll("line").data(yTicks).enter().append("line")
+      .attr("stroke","black")
+      .attr("stroke-width",0.2)
+      .attr("y1", function(d){return self.page.scales[field](d)})
+      .attr("y2", function(d){return self.page.scales[field](d)})
+      .attr("x1", self.svgAtt.margins.left)
+      .attr("x2", self.svgAtt.width-self.svgAtt.margins.right)
   },
   makeChart:function(data){
     var self = this;
@@ -93,10 +117,23 @@ var oeViz = {
     this.page.xAxisLabel.text("Average OE");
     this.page.yAxisLabel.text(field);
   },
+  transitionGridlines(field){
+    var self = this;
+    var yGrid = this.page.gridlines.select(".y-grid");
+    var yTicks = this.page.scales[field].ticks();
+    var selection = yGrid.selectAll("line").data(yTicks);
+    selection.transition().duration(500)
+      .attr("y1", function(d){return self.page.scales[field](d)})
+      .attr("y2", function(d){return self.page.scales[field](d)})
+      .attr("x1", self.svgAtt.margins.left)
+      .attr("x2", self.svgAtt.width-self.svgAtt.margins.right);
+    selection.exit().remove();
+  },
   transitionChart:function(field){
     var self = this;
-    this.transitionScales(field)
-    this.page.svg.selectAll("circle").transition().duration(1000)
+    this.transitionScales(field);
+    this.transitionGridlines(field);
+    this.page.svg.selectAll("circle").transition().duration(500)
       .attr("transform",function(d){
         return "translate("+self.page.scales["Avg. Oe"](d["Avg. Oe"])+","+self.page.scales[field](d[field])+")";
       })
@@ -114,6 +151,7 @@ var oeViz = {
     d3.csv("OE.csv",function(data){
       self.page.data = data;
       self.makeScales(data);
+      self.makeGrid();
       self.makeChart(data);
       self.bindInteraction();
     })
