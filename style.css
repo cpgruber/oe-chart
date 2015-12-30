@@ -65,11 +65,19 @@ footer{
   width:80vw;
 }
 footer img{
-  height:60px;
+  height:40px;
   vertical-align: middle;
 }
 @media (max-width:760px){
-  header img{
-    height:60px;
+  .xaxis .tick:nth-child(even) text{
+    display:none;
+  }
+}
+@media (max-width:500px){
+  .xaxis .tick text{
+    display:none;
+  }
+  .xaxis .tick:nth-child(4n+1) text{
+    display:block;
   }
 }

@@ -167,6 +167,7 @@ var oeViz = {
   transitionAnnotations:function(field){
     var self = this;
     var annos = this.page.annotations.selectAll(".annotate")
+    var lineW = this.svgAtt.width/15;
     annos.selectAll("line").transition().duration(500)
       .attr("y1",function(d){
         return self.page.scales[field](d[field])
@@ -176,7 +177,7 @@ var oeViz = {
       })
     annos.selectAll("text").transition().duration(500)
       .attr("transform", function(d){
-        var offset = (d["Player Name"]=="Stephen Curry")?100:(-100);
+        var offset = (d["Player Name"]=="Stephen Curry")?lineW:lineW*(-1);
         return "translate("+(self.page.scales["Avg. Oe"](d["Avg. Oe"])+offset)+","+self.page.scales[field](d[field])+")"
       })
   },
@@ -185,6 +186,7 @@ var oeViz = {
     var field = this.getField();
     var names = ["DeAndre Jordan", /*"Andre Drummond",*/ "Stephen Curry"];
     var players = data.filter(function(a){return names.indexOf(a["Player Name"])>-1})
+    var lineW = this.svgAtt.width/15;
     var annotations = this.page.annotations.selectAll(".annotate").data(players).enter().append("g")
       .attr("class","annotate");
     annotations.append("line")
@@ -193,7 +195,7 @@ var oeViz = {
         return self.page.scales["Avg. Oe"](d["Avg. Oe"])
       })
       .attr("x2",function(d){
-        var offset = (d["Player Name"]=="Stephen Curry")?100:(-100);
+        var offset = (d["Player Name"]=="Stephen Curry")?lineW:lineW*(-1);
         return (self.page.scales["Avg. Oe"](d["Avg. Oe"]))+offset;
       })
       .attr("y1",function(d){
@@ -208,7 +210,7 @@ var oeViz = {
         return d["Player Name"]
       })
       .attr("transform", function(d){
-        var offset = (d["Player Name"]=="Stephen Curry")?100:(-100);
+        var offset = (d["Player Name"]=="Stephen Curry")?lineW:lineW*(-1);
         return "translate("+(self.page.scales["Avg. Oe"](d["Avg. Oe"])+offset)+","+self.page.scales[field](d[field])+")"
       })
       .attr("text-anchor",function(d){
